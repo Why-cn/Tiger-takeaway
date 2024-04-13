@@ -13,6 +13,10 @@ File Encoding         : 65001
 Date: 2021-07-23 10:41:41
 */
 
+DROP DATABASE IF EXISTS tiger_takeaway;
+CREATE DATABASE tiger_takeaway;
+USE tiger_takeaway;
+
 SET
 FOREIGN_KEY_CHECKS=0;
 
