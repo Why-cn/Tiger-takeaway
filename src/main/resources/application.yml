@@ -1,11 +1,8 @@
 server:
   port: 8080  # default port
-
-
 spring:
   application:
     name: tiger_takeaway  # 应用名称
-
 
   # 数据库信息|必填
   datasource:
@@ -17,12 +14,11 @@ spring:
       username: tiger_dev
       password: password
 
-
-  # 邮箱验证配置信息|必填
+  # 邮箱验证配置信息
   mail:
-    host: smtp.qq.com   # 如果你需要使用非qq邮箱，请自行配置host
+    host: smtp.qq.com
     username: # 请自行配置邮箱地址
-    password: wddrbljraesbdhdg # 请自行配置邮箱smtp授权码 具体请看本项目根目录下的README.md
+    password: mwluvwkrszbldgbh # 请自行配置邮箱smtp授权码 具体请看本项目根目录下的README.md
     port: 587
     default-encoding: UTF-8
     timeout: 10 # 验证码有效时间 单位：分钟
@@ -33,16 +29,6 @@ spring:
         # 开启debug以后，邮件发送过程的日志会在控制台上打印出来
         debug: true
 
-
-  # redis缓存相关配置|必填
-  redis:
-    host: localhost
-    port: 6379          # 默认端口
-    password:           # 默认为空
-    database: 0         # 默认使用0号数据库
-
-
-# mybatis-plus配置信息
 mybatis-plus:
   configuration:
     # 在映射实体或者属性时，将数据库中表名和字段名中的下划线去掉，按照驼峰命名法映射
@@ -51,7 +37,6 @@ mybatis-plus:
   global-config:
     db-config:
       id-type: ASSIGN_ID
-
 
 # 其它配置信息
 tiger:

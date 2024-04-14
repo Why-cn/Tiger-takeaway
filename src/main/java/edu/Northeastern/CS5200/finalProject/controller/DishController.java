@@ -1,17 +1,23 @@
 package edu.Northeastern.CS5200.finalProject.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import edu.Northeastern.CS5200.finalProject.common.R;
 import edu.Northeastern.CS5200.finalProject.dto.DishDto;
+import edu.Northeastern.CS5200.finalProject.entity.Category;
 import edu.Northeastern.CS5200.finalProject.entity.Dish;
+import edu.Northeastern.CS5200.finalProject.entity.DishFlavor;
 import edu.Northeastern.CS5200.finalProject.service.CategoryService;
 import edu.Northeastern.CS5200.finalProject.service.DishFlavorService;
 import edu.Northeastern.CS5200.finalProject.service.DishService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>Project: tiger-takeaway - DishController 菜品相关的控制类
@@ -72,10 +78,41 @@ public class DishController {
      */
     @GetMapping("/page")
     public R<Page> page(int page, int pageSize, String name) {
-        log.info("分页查询菜品，page: {}, pageSize: {}, name: {}", page, pageSize, name);
+        // 构造分页构造对象
+        Page<Dish> pageInfo = new Page<>(page, pageSize);   // Page对象的构造方法需要传入当前页码和每页显示的条数
+        Page<DishDto> dishDtoPage = new Page<>();   // disDto中比dish多了flavorsName字段，用于存储菜品口味的名称，因为只用dish对象无法获取菜品口味的名称，所以先创建一个空的Page对象
+        // 条件构造器
+        LambdaQueryWrapper<Dish> wrapper = new LambdaQueryWrapper<>();
+        // 如果name不为空，则添加查询条件 (where name like '%name%')
+        wrapper.like(name != null, Dish::getName, name);  // like方法的第一个参数为是否添加查询条件，第二个参数为查询的字段(Dish中的name)，第三个参数为查询的值(参数name)
+        // 添加排序条件 (order by update-time desc)
+        wrapper.orderByDesc(Dish::getUpdateTime);
+        // 分页查询
+        dishService.page(pageInfo, wrapper);   // page方法的第一个参数为分页构造对象，第二个参数为条件构造器
+        // 对象拷贝，将pageInfo中的dish对象拷贝到dishDtoPage中的dishDto对象中
+        BeanUtils.copyProperties(pageInfo, dishDtoPage, "records"); // BeanUtils是Spring提供的工具类，用于对象拷贝，第一个参数为源对象，第二个参数为目标对象，第三个参数为忽略的字段，之所以忽略records字段是因为两个records字段的类型不一致，无法直接拷贝
+        // records是Page对象中的一个字段，用于存储分页查询的结果，因为dishDtoPage中的records字段是空的，所以需要手动将dishDtoPage中的records字段赋值
+        List<Dish> records = pageInfo.getRecords();
 
-        // 查询dishDtoPage对象
-        Page<DishDto> dishDtoPage = dishService.page(page, pageSize, name);
+        // 将records中的每个dish对象的categoryId经过查询出categoryName，然后将categoryName赋值给dishDto对象的categoryName字段，同时将其它字段也赋值给dishDto对象，返回的是一个List<DishDto>对象
+        List<DishDto> dishDtoRecordsList = records.stream().map((item) -> {  // item是records List中的每一个元素，即每一个dish对象，其中却少了菜品口味的名称属性(categoryName)，于是我们需要将其变为dishDto对象，再利用CategoryService通过dish中的categoryId获取菜品口味的名称
+            // 1.new DishDto()是为了将dish对象转换为dishDto对象，因为dishDto中多了flavorsName字段，用于存储菜品口味的名称
+            DishDto dishDto = new DishDto();
+            // 2.先进行dishDto的普通字段拷贝
+            BeanUtils.copyProperties(item, dishDto);
+            // 3.再进行dishDto的flavorsName字段拷贝
+            Long categoryId = item.getCategoryId();                     // 获取page里面records的每一个dish对象的categoryId
+            Category category = categoryService.getById(categoryId);    // 根据categoryId查询category对象
+            if (category != null) {                                     // 防止category为空
+                String categoryName = category.getName();               // 通过查询的category对象获取categoryName
+                dishDto.setCategoryName(categoryName);                  // 将categoryName赋值给dishDto对象的categoryName
+            }
+
+            return dishDto;
+        }).collect(Collectors.toList());  // collect方法将stream转换为List，因为dishDtoRecordsList是一个List对象，所以需要将stream转换为List
+
+        // 将dishDtoRecordsList赋值给dishDtoPage的records字段
+        dishDtoPage.setRecords(dishDtoRecordsList);
 
         // 返回dishDtoPage对象
         return R.success(dishDtoPage);
@@ -108,7 +145,6 @@ public class DishController {
     @PutMapping
     public R<String> put(@RequestBody DishDto dishDto) {
         log.info("修改菜品，dishDto: {}", dishDto.toString());       // Slf4j的日志输出
-
         // 保存菜品
         dishService.updateWithFlavors(dishDto);
 
@@ -127,9 +163,19 @@ public class DishController {
     @PostMapping("/status/{status}")
     public R<String> changeStatus(String ids, @PathVariable Integer status) {
         log.info("修改菜品状态，id: {}, status: {}", ids, status);
-
-        // 修改菜品状态
-        dishService.updateDishStatus(ids, status);
+        // 将ids以逗号分隔
+        String[] idArray = ids.split(",");
+        // 遍历idArray，将每一个id的菜品状态修改为status
+        for (String id : idArray) {
+            // 条件构造器
+            LambdaUpdateWrapper<Dish> wrapper = new LambdaUpdateWrapper<>();
+            // 设置条件 (where id = id)
+            wrapper.eq(Dish::getId, id);
+            // 设置要修改的字段 (set status = status)
+            wrapper.set(Dish::getStatus, status);
+            // 执行修改
+            dishService.update(wrapper);
+        }
 
         return R.success("修改成功");
     }
@@ -145,9 +191,21 @@ public class DishController {
     @DeleteMapping
     public R<String> delete(String ids) {
         log.info("删除菜品，id: {}", ids);
-
-        // 删除菜品
-        dishService.deleteByIds(ids);
+        // 将ids以逗号分隔
+        String[] idArray = ids.split(",");
+        // 遍历idArray，将每一个id的菜品状态修改为status
+        for (String id : idArray) {
+            // 条件构造器
+            LambdaUpdateWrapper<Dish> wrapper = new LambdaUpdateWrapper<>();
+            // 设置条件 (where id = id)
+            wrapper.eq(Dish::getId, id);
+            // 修改菜品状态为停售
+            wrapper.set(Dish::getStatus, 0);
+            // 设置删除字段为1 (set is_deleted = 1)
+            wrapper.set(Dish::getIsDeleted, 1);  // 由于Dish实体类的isDeleted使用了@TableLogic进行逻辑删除，这里还可以直接调用dishService的removeById方法，会自动将is_deleted字段设置为1
+            // 执行修改
+            dishService.update(wrapper);
+        }
 
         return R.success("删除成功");
     }   // fixme:没有做到同步删除菜品和菜品口味的关联表
@@ -162,12 +220,35 @@ public class DishController {
      */
     @GetMapping("/list")
     public R<List<DishDto>> list(Dish dish) {
-        log.info("查询菜品列表，dish: {}", dish);
+        // 构造查询条件
+        LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
+        // where status = 1 and category_id = ?  由于Dish的isDeleted字段使用了@TableLogic注解，所以这里不需要设置is_deleted = 0，MP会自动将is_deleted = 0的条件加入到查询条件中
+        queryWrapper.eq(Dish::getStatus, 1);
+        queryWrapper.eq(dish.getCategoryId() != null, Dish::getCategoryId, dish.getCategoryId()); // dish.getCategoryId() != null 为true则执行后面的语句
+        // 添加排序条件 where category_id = ? order by sort asc , update_time desc
+        queryWrapper.orderByAsc(Dish::getSort).orderByDesc(Dish::getUpdateTime);
+        // 查询到的菜品列表，不包含菜品口味信息
+        List<Dish> list = dishService.list(queryWrapper);
+        // 将查询到的菜品列表转换为菜品DTO列表，包含菜品口味信息
+        List<DishDto> dtoList = list.stream().map((item) -> {
+            // 1.new DishDto()是为了将dish对象转换为dishDto对象，因为dishDto对象中包含了dish对象中的所有属性，还包含了菜品口味信息
+            DishDto dishDto = new DishDto();
+            // 2.先进行dishDto的普通字段拷贝
+            BeanUtils.copyProperties(item, dishDto);
+            // 3.再进行dishDto的菜品口味字段拷贝
+            Long DishId = item.getId();                                 // 获取每一个dish对象(item)的id
+            LambdaQueryWrapper<DishFlavor> dishFlavorQueryWrapper = new LambdaQueryWrapper<>();    // select * from dish_flavor
+            dishFlavorQueryWrapper.eq(DishFlavor::getDishId, DishId);      // where dish_id = ?
+            // 4.查询到的菜品口味列表
+            List<DishFlavor> dishFlavorList = dishFlavorService.list(dishFlavorQueryWrapper);
+            // 5.将查询到的菜品口味列表转换为菜品口味DTO列表
+            dishDto.setFlavors(dishFlavorList);
 
-        // 查询菜品列表
-        List<DishDto> dishDtoList = dishService.listWithFlavors(dish);
+            return dishDto;
+        }).collect(Collectors.toList());  // collect方法将stream转换为List，因为dishDtoRecordsList是一个List对象，所以需要将stream转换为List
 
-        return R.success(dishDtoList);
+
+        return R.success(dtoList);
     }
 
 }
