@@ -2,7 +2,10 @@ package edu.Northeastern.CS5200.finalProject.controller;
 
 import edu.Northeastern.CS5200.finalProject.common.R;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,12 +33,18 @@ import java.util.UUID;
 @RequestMapping("/common")
 public class CommonController {
 
-    /**
-     * file将会存放的位置，通过@Value注解获取配置文件中的值
-     */
-    @Value("${tiger.linux-path}")
-    private String basePath;
+    private final String basePath;
 
+    public CommonController(ResourceLoader resourceLoader,
+                            @Value("${tiger.filesPath}") String filesPath) {
+        Resource resource = resourceLoader.getResource("classpath:" + filesPath);
+        try {
+            this.basePath = resource.getFile().getAbsolutePath() + File.separator;
+            System.out.println(this.basePath);
+        } catch (IOException e) {
+            throw new RuntimeException("无法获取 img 文件夹路径", e);
+        }
+    }
 
     /**
      * 文件上传
