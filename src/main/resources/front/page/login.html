@@ -6,7 +6,7 @@
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0,user-scalable=no,minimal-ui">
-    <title>会员制餐厅</title>
+    <title>Member-Only Restaurant</title>
     <link rel="icon" href="./../images/favico.ico">
     <!--不同屏幕尺寸根字体设置-->
     <script src="./../js/base.js"></script>
@@ -24,16 +24,16 @@
     <!-- TODO: 整个登陆系统仍有改进空间，预计加入密码功能 -->
     <div class="divHead">登录</div>
     <div class="divContainer">
-        <el-input placeholder=" 请输入邮箱" v-model="form.email" maxlength='50'/>
+        <el-input placeholder=" Please enter email" v-model="form.email" maxlength='50'/>
         </el-input>
         <div class="divSplit"></div>
-        <el-input placeholder=" 请输入验证码" v-model="form.code" maxlength='30'/>
+        <el-input placeholder=" Please enter verification code" v-model="form.code" maxlength='30'/>
         </el-input>
-        <span @click='getCode'>获取验证码</span>
+        <span @click='getCode'>Get verification code</span>
     </div>
-    <div class="divMsg" v-if="msgFlag">邮箱格式不正确，请重新输入</div>
+    <div class="divMsg" v-if="msgFlag">Unvalid email, please re-enter</div>
     <el-button type="primary" :class="{btnSubmit:1===1,btnNoEmail:!form.email,btnEmail:form.email}" @click="btnLogin">
-        登录
+        Sign in
     </el-button>
 </div>
 <!-- 开发环境版本，包含了有帮助的命令行警告 -->
@@ -72,7 +72,7 @@
                 if (regex.test(this.form.email)) {
                     // 当验证通过 提示“请稍后”
                     this.$toast.loading({
-                        message: '请稍后...',
+                        message: 'Please wait...',
                         forbidClick: true,  // 禁止背景点击
                         duration: 2000 // 延迟关闭
                     });
@@ -82,14 +82,14 @@
                         if (res.code === 1) {
                             this.$message(
                                 {
-                                    message: "验证码已经发送，请注意查收垃圾信箱",
+                                    message: "Verification code has been sent, please check your email",
                                     type: 'success'
                                 }
                             )
                         } else {
                             this.$message(
                                 {
-                                    message: "验证码发送失败,请输入正确邮箱",
+                                    message: "Verification code sending failed, please enter a valid email",
                                     type: 'failed'
                                 }
                             )
@@ -115,7 +115,7 @@
                         this.$notify({type: 'warning', message: res.msg});
                     }
                 } else {
-                    this.$notify({type: 'warning', message: '请输入邮箱和验证码'});
+                    this.$notify({type: 'warning', message: 'Please enter email and verification code'});
                 }
             }
         }
