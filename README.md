@@ -1,6 +1,6 @@
 # Tiger Takeaway
 
-Tiger Takeaway is a web-based food ordering and delivery application built using the Spring Boot and SSM frameworks.
+Tiger Takeaway is a web-based food ordering and delivery application built using the Spring Boot, MySQL and Mybatis.
 
 ### Build, Install and Run
 
@@ -13,6 +13,7 @@ development and debugging environment, which facilitates reproduction.
  - IDE: Jetbrains IntelliJ IDEA 2024.1
  - JDK: Amazon Corretto 1.8.0_402
  - Build tool: Apache Maven 3.9.6
+ - Database: MySQL 8.0.36
  - Test browsers: Google Chrome 123.0, Safari 604.1
 
 #### Installation
@@ -23,5 +24,18 @@ development and debugging environment, which facilitates reproduction.
    right to run it.
 4. You may need to let maven download dependencies for the application. Click "Ⓜ️" button on the right and choose 
    "install".
-5. After you run the application, There should be prompt in the output showing like "Project started successfully! 
+
+#### Configurations
+
+1. Edit the file "application.yml" in Resources folder in Project column at left side of the IDE.
+   (src/main/resources/application.yml)
+2. Set application port: edit server.port, default 8080.
+3. Set email SMTP authentication: edit mail.host, mail.username, mail.password, mail.port.
+4. 
+
+#### Run the application
+
+After you run the application, There should be prompt in the output showing like "Project started successfully! 
    [Tiger Takeaway]" and two addresses for Backend management system and frontend service page.
+
+#### Used tools and package
