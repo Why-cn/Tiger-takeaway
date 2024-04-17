@@ -2,7 +2,7 @@
 
 Tiger Takeaway is a web-based food ordering and delivery application built using the Spring Boot, MySQL and Mybatis.
 
-### Build, Install and Run
+### Build, Install, Config and Run
 
 #### Development & debugging environment
 
@@ -30,12 +30,19 @@ development and debugging environment, which facilitates reproduction.
 1. Edit the file "application.yml" in Resources folder in Project column at left side of the IDE.
    (src/main/resources/application.yml)
 2. Set application port: edit server.port, default 8080.
-3. Set email SMTP authentication: edit mail.host, mail.username, mail.password, mail.port.
-4. 
+3. Set email SMTP authentication: edit spring.mail.host, spring.mail.username, spring.mail.password, spring.mail.port.
+4. Import SQL into MySQL server: Execute sql/db.sql and sql/user_tiger_dev.sql in your MySQL server.
+5. Set local MySQL authentication: edit spring.datasource.druid.username, spring.datasource.druid.password.
 
 #### Run the application
 
 After you run the application, There should be prompt in the output showing like "Project started successfully! 
    [Tiger Takeaway]" and two addresses for Backend management system and frontend service page.
 
-#### Used tools and package
+### Used tools and packages
+
+ - Spring Boot 2.4.5
+ - Mybatis-Plus 3.4.2
+ - Lombok 1.18.20
+ - Fastjson 1.2.76
+ - Alibaba Druid 1.1.23
