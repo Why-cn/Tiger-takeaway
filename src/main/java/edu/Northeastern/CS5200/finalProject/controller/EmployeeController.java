@@ -12,6 +12,8 @@ import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
+import java.io.IOException;
 
 
 /**
@@ -50,7 +52,6 @@ public class EmployeeController {
      */
     @PostMapping("/login")
     public R<Employee> login(HttpServletRequest request, @RequestBody Employee employee) {
-
         // 1.将页面提交的密码password进行md5加密处理，md5加密并非绝对安全的加密方式，它能够防止密码被明文传输，减小风险。
         String password = employee.getPassword();
         password = DigestUtils.md5DigestAsHex(password.getBytes()); // DigestUtils是Spring提供的工具类，用于加密。
@@ -78,9 +79,23 @@ public class EmployeeController {
         // 6.如果都正确，将员工id存入session中，返回成功信息
         request.getSession().setAttribute("employee", emp.getId());
         return R.success(emp);
-
     }
 
+
+    /**
+     * 验证前端是明文返回密码的测试方法
+     */
+//    @PostMapping("/login")
+//    public void login(HttpServletRequest request) throws IOException {
+//        BufferedReader reader = request.getReader();
+//        StringBuilder stringBuilder = new StringBuilder();
+//        String line;
+//        while ((line = reader.readLine()) != null) {
+//            stringBuilder.append(line);
+//        }
+//        String requestBody = stringBuilder.toString();
+//        System.out.println("原始请求体文本：" + requestBody);
+//    }
 
     /**
      * <h2>退出登陆</h2>
