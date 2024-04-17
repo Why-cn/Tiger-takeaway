@@ -96,7 +96,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 获取session中的验证码
         String verificationCodeInSession = (String) session.getAttribute("verificationCode");
         // 验证码是否正确
-        if (verificationCodeInSession != null && verificationCodeInSession.equals(code)) {
+        if (verificationCodeInSession == null) {
+            // 验证码失效
+            throw new CustomException("验证码失效，请重新获取！");
+        } else if (verificationCodeInSession.equals(code)) {
             // 验证码正确
             // 查询用户是否存在
             LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
