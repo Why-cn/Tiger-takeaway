@@ -6,7 +6,7 @@
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0,user-scalable=no,minimal-ui">
-    <title>会员制餐厅</title>
+    <title>Member-Only Restaurant</title>
     <link rel="icon" href="images/favico.ico">
     <!--不同屏幕尺寸根字体设置-->
     <script src="./js/base.js"></script>
@@ -28,16 +28,16 @@
         <div class="divStatic">
             <img src="./images/logo.png" class="logo"/>
             <div class="divDesc">
-                <div class="divName">会员制餐厅</div>
+                <div class="divName">Member-Only Restaurant</div>
                 <div class="divSend">
-                    <span><img src="./images/time.png"/> 距离11.4km</span>
-                    <span><img src="./images/money.png"/> 配送费5元</span>
-                    <span><img src="./images/location.png"/> 预计时长58min</span>
+                    <span><img src="./images/time.png"/> Distance is 11.4km</span>
+                    <span><img src="./images/money.png"/> Delivery fee is $5</span>
+                    <span><img src="./images/location.png"/> Estimated deliver in 58min</span>
                 </div>
             </div>
         </div>
         <div class="divDesc">
-            简介: 会员制餐厅是一个高档美食餐厅，口味独特，吃得完有奖励，吃不完有惩罚，是您享受美食的好去处。
+            Intro: Membership-Only restaurant is a good place for you to enjoy food.
         </div>
     </div>
     <div class="divBody">
@@ -59,7 +59,7 @@
                     <div>
                         <div class="divName">{{item.name}}</div>
                         <div class="divDesc">{{item.description}}</div>
-                        <div class="divDesc">{{'月销' + (item.saleNum ? item.saleNum : 0) }}</div>
+                        <div class="divDesc">{{'Monthly sales' + (item.saleNum ? item.saleNum : 0) }}</div>
                         <div class="divBottom"><span>￥</span><span>{{item.price/100}}</span></div>
                         <div class="divNum">
                             <div class="divSubtract" v-if="item.number > 0">
@@ -67,7 +67,7 @@
                             </div>
                             <div class="divDishNum">{{item.number}}</div>
                             <div class="divTypes" v-if="item.flavors && item.flavors.length > 0 && !item.number "
-                                 @click.prevent.stop="chooseFlavorClick(item)">选择规格
+                                 @click.prevent.stop="chooseFlavorClick(item)">Select specification
                             </div>
                             <div class="divAdd" v-else>
                                 <img src="./images/add.png" @click.prevent.stop="addCart(item)"/>
@@ -95,7 +95,7 @@
         </div>
         <div class="divPrice"></div>
         <div :class="{btnSubmitActive: cartData && cartData.length > 0, btnSubmit:!cartData || cartData.length<1}"
-             @click="toAddOrderPage">去结算
+             @click="toAddOrderPage">Check out
         </div>
     </div>
     <van-dialog v-model="dialogFlavor.show" :show-confirm-button="false" class="dialogFlavor" ref="flavorDialog">
@@ -112,7 +112,7 @@
         </div>
         <div class="divBottom">
             <div><span class="spanMoney">￥</span>{{dialogFlavor.price/100}}</div>
-            <div @click="dialogFlavorAddCart">加入购物车</div>
+            <div @click="dialogFlavorAddCart">Add to cart</div>
         </div>
         <div class="divFlavorClose" @click="dialogFlavor.show = false">
             <img src="./images/close.png"/>
@@ -120,9 +120,9 @@
     </van-dialog>
     <van-popup v-model="cartDialogShow" position="bottom" :style="{ height: '50%' }" class="dialogCart">
         <div class="divCartTitle">
-            <div class="title">购物车</div>
+            <div class="title">Cart</div>
             <div class="clear" @click="clearCart">
-                <i class="el-icon-delete"></i> 清空
+                <i class="el-icon-delete"></i> Clear
             </div>
         </div>
         <div class="divCartContent">
@@ -185,7 +185,7 @@
                 <div class="divDishNum">{{detailsDialog.item.number}}</div>
                 <div class="divTypes"
                      v-if="detailsDialog.item.flavors && detailsDialog.item.flavors.length > 0 && !detailsDialog.item.number "
-                     @click="chooseFlavorClick(detailsDialog.item)">选择规格
+                     @click="chooseFlavorClick(detailsDialog.item)">Select specification
                 </div>
                 <div class="divAdd" v-else>
                     <img src="./images/add.png" @click="addCart(detailsDialog.item)"/>
@@ -210,7 +210,7 @@
                         <img src="./images/noImg.png"/>
                     </div>
                 </el-image>
-                <div class="divSubTitle">{{item.name + '(' + item.copies + '份)' }}
+                <div class="divSubTitle">{{item.name + '(' + item.copies + 'copy)' }}
                     <div class="divPrice">
                         <span>￥</span><span>{{item.price/100}}</span>
                     </div>
@@ -230,7 +230,7 @@
                 <div class="divAdd" v-if="setMealDialog.item.number">
                     <img src="./images/add.png" @click="addCart(setMealDialog.item)"/>
                 </div>
-                <div class="addCart" @click="addCart(setMealDialog.item)" v-if="!setMealDialog.item.number">加入购物车
+                <div class="addCart" @click="addCart(setMealDialog.item)" v-if="!setMealDialog.item.number">Add to cart
                 </div>
             </div>
         </div>
@@ -567,7 +567,7 @@
                         dishFlavor.push(item.dishFlavor)
                     } else {
                         flag = false
-                        Notify({type: 'warning', message: '请选择' + item.name});
+                        Notify({type: 'warning', message: 'Please select' + item.name});
                     }
                 })
                 if (flag) {
