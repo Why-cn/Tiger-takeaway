@@ -1,18 +1,3 @@
-/*
-Navicat MySQL4 Data Transfer
-
-Source Server         : localhost
-Source Server Version : 50728
-Source Host           : localhost:3306
-Source Database       : reggie
-
-Target Server Type    : MYSQL
-Target Server Version : 50728
-File Encoding         : 65001
-
-Date: 2021-07-23 10:41:41
-*/
-
 DROP DATABASE IF EXISTS tiger_takeaway;
 CREATE DATABASE tiger_takeaway;
 USE tiger_takeaway;

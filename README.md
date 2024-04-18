@@ -47,3 +47,4 @@ After you run the application, There should be prompt in the output showing like
  - Lombok 1.18.20
  - Fastjson 1.2.76
  - Alibaba Druid 1.1.23
+ - Vue 2.6.12
