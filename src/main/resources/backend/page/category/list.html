@@ -46,7 +46,7 @@
                     label="category type"
             >
                 <template slot-scope="scope">
-                    <span>{{ scope.row.type == '1' ? 'cuisine category': 'set meal category' }}</span>
+                    <span>{{ scope.row.type == '1' ? 'cuisine category': 'combo category' }}</span>
                 </template>
             </el-table-column>
             <el-table-column
@@ -199,7 +199,7 @@
                     this.classData.title = 'Add cuisine category'
                     this.type = '1'
                 } else {
-                    this.classData.title = 'Add set meal category'
+                    this.classData.title = 'Add combo category'
                     this.type = '2'
                 }
                 this.action = 'add'
