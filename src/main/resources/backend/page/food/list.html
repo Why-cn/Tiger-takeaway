@@ -29,7 +29,7 @@
                 ></i>
             </el-input>
             <div class="tableLab">
-                <span class="span-btn delBut non" @click="deleteHandle('批量', null)">Delete in batches</span>
+                <span class="span-btn delBut non" @click="deleteHandle('batches', null)">Delete in batches</span>
                 <span class="span-btn blueBug non" @click="statusHandle('1')">Sale in batches</span>
                 <span style="border:none;" class="span-btn delBut non" @click="statusHandle('0')">Sold out in batches</span>
                 <el-button
@@ -110,7 +110,7 @@
                             type="text"
                             size="small"
                             class="delBut non"
-                            @click="deleteHandle('单删', scope.row.id)"
+                            @click="deleteHandle('single', scope.row.id)"
                     >
                         Delete
                     </el-button>
@@ -199,7 +199,7 @@
 
             // 删除
             deleteHandle(type, id) {
-                if (type === '批量' && id === null) {
+                if (type === 'batches' && id === null) {
                     if (this.checkList.length === 0) {
                         return this.$message.error('Please select items')
                     }
@@ -208,7 +208,7 @@
                     'confirmButtonText': 'Confirm',
                     'cancelButtonText': 'Delete',
                 }).then(() => {
-                    deleteDish(type === '批量' ? this.checkList.join(',') : id).then(res => {
+                    deleteDish(type === 'batches' ? this.checkList.join(',') : id).then(res => {
                         if (res.code === 1) {
                             this.$message.success('Delete successfully！')
                             this.handleQuery()
