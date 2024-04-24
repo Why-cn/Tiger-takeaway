@@ -70,7 +70,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         simpleMailMessage.setSubject("[Tiger Takeaway]Login verification code");
         // 设置邮件内容
         simpleMailMessage.setText("Welcome to use Tiger Takeaway! \n" +
-                "Your verification code is:" + code + "，Please use in" + TIME_OUT + "minutes\n【This email is automatically sent by the system, please do not reply】");
+                "Your verification code is: " + code + "，Please use in " + TIME_OUT + " minutes\n【This email is automatically sent by the system, please do not reply】");
         // 将验证码存入session
         session.setAttribute("verificationCode", code);
         // 发送邮件
@@ -99,7 +99,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 验证码是否正确
         if (verificationCodeInSession == null) {
             // 验证码失效
-            throw new CustomException("验证码失效，请重新获取！");
+            throw new CustomException("The verification code lose effectiveness, please get it again!");
         } else if (verificationCodeInSession.equals(code)) {
             // 验证码正确
             // 查询用户是否存在
@@ -118,7 +118,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return user;
         } else {
             // 验证码错误
-            throw new CustomException("验证码错误！");
+            throw new CustomException("Verification code error!");
         }
     }
 }
