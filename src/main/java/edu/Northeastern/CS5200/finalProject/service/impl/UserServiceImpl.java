@@ -67,9 +67,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 设置邮件接收者
         simpleMailMessage.setTo(email);
         // 设置邮件主题
-        simpleMailMessage.setSubject("[悦刻外卖]登陆验证码");
+        simpleMailMessage.setSubject("[Tiger Takeaway]Login verification code");
         // 设置邮件内容
-        simpleMailMessage.setText("欢迎使用悦刻外卖平台\n您的验证码为：" + code + "，请在" + TIME_OUT + "分钟内使用！\n【该邮件为系统自动发送，请勿回复】");
+        simpleMailMessage.setText("Welcome to use Tiger Takeaway! \n" +
+                "Your verification code is:" + code + "，Please use in" + TIME_OUT + "minutes\n【This email is automatically sent by the system, please do not reply】");
         // 将验证码存入session
         session.setAttribute("verificationCode", code);
         // 发送邮件
@@ -77,7 +78,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             javaMailSender.send(simpleMailMessage);
         } catch (MailException e) {
             e.printStackTrace();
-            throw new CustomException("致命错误！");
+            throw new CustomException("Fatal Error！");
         }
 
 
