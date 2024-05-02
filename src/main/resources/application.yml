@@ -17,8 +17,8 @@ spring:
   # 邮箱验证配置信息
   mail:
     host: smtp.163.com
-    username: 15636351535@163.com
-    password: WDZLORHSUUQGVJKU # 请自行配置邮箱smtp授权码 具体请看本项目根目录下的README.md
+    username: 
+    password: 
     port: 25
     default-encoding: UTF-8
     timeout: 60 # 验证码有效时间 单位：分钟
